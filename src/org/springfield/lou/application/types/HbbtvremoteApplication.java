@@ -78,5 +78,9 @@ public class HbbtvremoteApplication extends Html5Application{
  		this.componentmanager.getComponent("video").put("app", "play()");
         setContentAllScreensWithRole("mainscreen","overlay","PLAY HIT");
     }
+    
+    public void videostatus(Screen s,String content) {
+        setContentAllScreensWithRole("controller","overlay","T="+content);
+    }
 
 }

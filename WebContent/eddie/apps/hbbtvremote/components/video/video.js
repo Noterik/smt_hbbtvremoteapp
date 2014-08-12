@@ -4,6 +4,8 @@ var Video = function(options){
 	
 	$.extend(settings, options);
 	
+	setInterval('statusSender()', 1000);
+	
 	self.putMsg = function(msg){
 		try{
 			var command = [msg.target[0].class];
@@ -25,6 +27,11 @@ var Video = function(options){
 		}
 	}
 	
-
+	
 	return self;
 }
+
+function statusSender() {
+		var time = document.getElementById('video1').playPosition;
+		eddie.putLou('', 'videostatus('+time+')');
+	}
