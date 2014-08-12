@@ -24,17 +24,29 @@ import org.springfield.fs.Fs;
 import org.springfield.fs.FsNode;
 import org.springfield.lou.application.*;
 import org.springfield.lou.screen.*;
+import org.springfield.mojo.linkedtv.GAIN;
 
 public class HbbtvremoteApplication extends Html5Application{
 	
+	private boolean gainenabled = true;
+	private static String GAIN_ACCOUNT = "LINKEDTV-TEST";
+	private static String videotime;
+	private static GAIN gain = null;
+
+	
  	public HbbtvremoteApplication(String id) {
 		super(id); 
+		if (gain==null) {
+			gain = new GAIN(GAIN_ACCOUNT, id);
+			if (gainenabled) gain.application_new();
+		}
 	}
 	
     public void onNewScreen(Screen s) {
     	Capabilities cap = s.getCapabilities();
         loadStyleSheet(s, "generic");
         loadContent(s, "video");
+        if (gainenabled) gain.screen_new(s.getId());
        
         int mode = s.getCapabilities().getDeviceMode();
         if (cap.getDeviceMode()==cap.MODE_HBBTV) {
@@ -71,16 +83,19 @@ public class HbbtvremoteApplication extends Html5Application{
     
     public void pause(Screen s) {
  		this.componentmanager.getComponent("video").put("app", "pause()");
-        setContentAllScreensWithRole("mainscreen","overlay","PAUSE HIT");
+        setContentAllScreensWithRole("mainscreen","overlay","PAUSE HIT AT "+videotime);
+        if (gainenabled) gain.player_pause(s.getId(),"http://images1.noterik.com/euscreen/previewtool_screencast_beta.mp4", videotime);
     }
     
     public void play(Screen s) {
  		this.componentmanager.getComponent("video").put("app", "play()");
-        setContentAllScreensWithRole("mainscreen","overlay","PLAY HIT");
+        setContentAllScreensWithRole("mainscreen","overlay","PLAY HIT AT "+videotime);
+        if (gainenabled) gain.player_play(s.getId(),"http://images1.noterik.com/euscreen/previewtool_screencast_beta.mp4", videotime);
     }
     
     public void videostatus(Screen s,String content) {
         setContentAllScreensWithRole("controller","overlay","T="+content);
+        videotime = content;
     }
 
 }
